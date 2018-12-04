@@ -4,21 +4,22 @@
   "description": "A bot to automatically buy supreme drops",
   "manifest_version": 2,
   "background": {
-    "scripts": ["src/background.js"],
+    "scripts": ["./background.js"],
     "persistent": false
   },
-  "content_scripts": [{
+  "content_scripts": [
+    {
       "matches": ["https://*.supremenewyork.com/shop/*"],
-      "js": ["src/bot.js"]
+      "js": ["./bot.js"]
     },
     {
       "matches": ["https://www.supremenewyork.com/checkout"],
-      "js": ["src/pay.js"]
+      "js": ["./pay.js"]
     }
   ],
   "permissions": ["activeTab", "declarativeContent", "storage"],
   "page_action": {
-    "default_popup": "dist/index.html",
+    "default_popup": "./index.html",
     "default_icon": {
       "16": "images/16.png",
       "32": "images/32.png",

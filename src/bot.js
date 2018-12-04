@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+
 const getTarget = (name, color) => {
   const as = document.querySelectorAll('.inner-article');
   for (var i of as) {
@@ -33,6 +35,14 @@ const rendered = query => {
 }
 
 const checkout = async () => {
+  const size = await rendered('#size');
+  const options = size.querySelectorAll('option');
+  for (var i of options) {
+    if (i.innerText === 'Large') {
+      size.value = i.value;
+      size.dispatchEvent(new Event('change'));
+    }
+  }
   const container = await rendered('#add-remove-buttons');
   container.firstChild.click();
   const checkout = await rendered('a.button.checkout');
@@ -41,10 +51,27 @@ const checkout = async () => {
   }, 100)
 }
 
-const main = () => {
-  const target = getTarget('Quilted Studded Leather Jacket', 'Black');
-  target.click();
-  checkout();
+const main = (name, color) => {
+  const target = getTarget(name, color);
+  if (target) {
+    target.click();
+    checkout();
+    return true;
+  } else
+    return false;
 }
 
-export default main;
+chrome.runtime.onMessage.addListener(
+  (request, sender, sendResponse) => {
+    const r = main(request.item, request.color);
+    if (!r) {
+      sendResponse({
+        found: false
+      });
+      document.querySelector('.current').click();
+    }
+  });
+//export default main;
+
+//Quilted Studded Leather Jacket
+//Black
