@@ -14,6 +14,11 @@
     {
       "matches": ["https://www.supremenewyork.com/checkout"],
       "js": ["src/pay.js"]
+    },
+    {
+      "matches": ["https://www.supremenewyork.com/*"],
+      "js": ["src/block.js"],
+      "run_at": "document_start"
     }
   ],
   "permissions": ["activeTab", "declarativeContent", "storage"],

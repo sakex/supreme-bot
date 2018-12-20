@@ -1,11 +1,8 @@
-import 'babel-polyfill';
-
 const getTarget = (name, color) => {
   const as = document.querySelectorAll('.inner-article');
   for (var i of as) {
-    const cond =
-      i.querySelector('h1').innerText.trim() === name &&
-      i.querySelector('p').innerText.trim() === color;
+    const cond = i.querySelector('h1').innerText.trim() === name &&
+      (color == undefined || color.length == 0 || i.querySelector('p').innerText.trim() === color);
     if (cond)
       return i.querySelector('a');
   }
@@ -34,13 +31,15 @@ const rendered = query => {
   })
 }
 
-const checkout = async () => {
-  const size = await rendered('#size');
-  const options = size.querySelectorAll('option');
-  for (var i of options) {
-    if (i.innerText === 'Large') {
-      size.value = i.value;
-      size.dispatchEvent(new Event('change'));
+const checkout = async size => {
+  if (size && size.length > 0) {
+    const sizeElem = await rendered('#size');
+    const options = sizeElem.querySelectorAll('option');
+    for (var i of options) {
+      if (i.innerText === size) {
+        sizeElem.value = i.value;
+        sizeElem.dispatchEvent(new Event('change'));
+      }
     }
   }
   const container = await rendered('#add-remove-buttons');
@@ -51,11 +50,11 @@ const checkout = async () => {
   }, 100)
 }
 
-const main = (name, color) => {
+const main = (name, color, size) => {
   const target = getTarget(name, color);
   if (target) {
     target.click();
-    checkout();
+    checkout(size);
     return true;
   } else
     return false;
@@ -63,13 +62,16 @@ const main = (name, color) => {
 
 chrome.runtime.onMessage.addListener(
   (request, sender, sendResponse) => {
-    const r = main(request.item, request.color);
+    const r = main(request.item, request.color, request.size);
     if (!r) {
       sendResponse({
         found: false
       });
       document.querySelector('.current').click();
-    }
+    } else
+      sendResponse({
+        found: true
+      })
   });
 //export default main;
 
