@@ -64,10 +64,6 @@ class App extends Component {
         this.setState({ CVV: e.target.value });
     }
 
-    sizeChange(e) {
-        this.setState({ size: e.target.value });
-    }
-
     moisChange(e) {
         this.setState({ mois: e.target.value });
     }
